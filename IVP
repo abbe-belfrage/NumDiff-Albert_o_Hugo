@@ -1,9 +1,0 @@
-class IVP: 
-    def __init__ (self, t0, T, y0):
-        self.t0 = t0
-        self.T = T
-        self.y0 = y0
-        return self
-
-    def f (t, y):
-        
