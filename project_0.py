@@ -13,12 +13,12 @@ class ivp:
     def f (self, t, y):
         raise NotImplementedError
 
-class LTE:
-    def __init__ (self, t0, T, y0, A):
+class LTE(ivp):
+    def __init__(self, t0, T, y0, A):
         super().__init__(t0, T, y0)
         self.A = A
 
-    def f (self, t, y ) :
+    def f (self, t0, y ) :
         return self.A @ y
 
     def exact(self, t):
@@ -32,5 +32,6 @@ ivp = LTE(t0 = 0 , T = 1, y0 = np.array([2]) , A = np.array([[-1]]))
 #plt . plot ( solver . grid , solver . us )
 
 ts = np.linspace(0, 1)
-ys = [ivp.exact(t) for t in ts ]
+ys = [ivp.exact(t) @ivp.y0 for t in ts ]
 plt.plot(ts, ys)
+plt.show()
