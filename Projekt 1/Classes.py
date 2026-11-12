@@ -28,13 +28,17 @@ class LTE(ivp):
         return self.y0 * scipy.linalg.expm(t*self.A)
 
 class Solver:
-    def __init__(self, ivp, N):
+    def __init__(self, ivp, N, tol = 1e-6, adaptive = bool):
         self.ivp = ivp
         self.N = N
         self.u = ivp.y0
-        self.grid = np.linspace(ivp.t0, ivp.T, N + 1)
+        if adaptive == False:
+            self.grid = np.linspace(ivp.t0, ivp.T, N + 1)
+        else: 
+            self.grid = np.zeros(0)
         self.h = (ivp.T - ivp.t0) / N
-        return self
+        self.tol = tol
+        self.adaptive = adaptive
 
     def step(self, tn, un):
         raise NotImplementedError

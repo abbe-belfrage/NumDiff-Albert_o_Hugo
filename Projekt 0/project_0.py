@@ -101,12 +101,12 @@ class Evaluator:                               #Evaluates error for solver class
 
 ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)
 evaluator = Evaluator(ivp , ExplicitEuler)
-#Ns = [10, 100, 1000]
-#errs, grids = evaluator.errvsh(Ns, True)
-#plt.plot(grids, errs)
+Ns = [10, 100, 1000]
+errs, grids = evaluator.errvsh(Ns, True)
+plt.plot(grids, errs)
 #print(errs)
-ts, errs = evaluator.errvstime(N = 100, bool = True)
-plt.plot(ts, errs)
+#ts, errs = evaluator.errvstime(N = 100, bool = True)
+#plt.plot(ts, errs)
 
 plt.show()
 
