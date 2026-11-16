@@ -85,10 +85,11 @@ class RK34(Solver):
         return self.grid, us
 
 
-ivp = LotkaVolterra(t0 = 0, T = 1, y0 = np.array([1.1, 0.9]))
-solver = RK34(ivp, 1000, tol = 1e-7, adaptive = True)
+ivp = LotkaVolterra(t0 = 0, T = 1000, y0 = np.array([1.1, 0.9]))
+solver = RK34(ivp, 100000, tol = 1e-6, adaptive = True)
 ts, us = solver.integrate()
-print(us)
+xs = us[0::2]  # Even indices: x0, x1, x2, ... (Rabbits)
+ys = us[1::2]  # Odd indices:  y0, y1, y2, ... (Foxes)
 plt.plot(ts, xs, label = 'Rabbits')
 plt.plot(ts, ys, label = 'Foxes')
 plt.xlabel('time')
