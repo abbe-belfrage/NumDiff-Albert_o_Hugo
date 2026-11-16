@@ -74,7 +74,6 @@ class RK34(Solver):
                     t_next = T
                 else: 
                     t_next = t_curr + self.h
-
                 self.u = self.step(t_curr, self.u)
                 self.grid = np.append(self.grid, t_next)
                 us = np.append(us, self.u)
