@@ -27,6 +27,19 @@ class LTE(ivp):
     def exact(self, t):             #Probably can't handle matrices
         return self.y0 * scipy.linalg.expm(t*self.A)
 
+class LotkaVolterra(ivp):
+    def __init__(self, t0, T, y0):
+        super().__init__(t0, T, y0)
+        self.a = 3
+        self.b = 9
+        self.c = 15
+        self.d = 15
+
+    def f(self, t, y):
+        y[0] = self.a*y[0] - self.b*y[0]*y[1]
+        y[1] = self.c*y[0]*y[1] - self.d*y[1]
+        return y
+
 class Solver:
     def __init__(self, ivp, N, tol = 1e-6, adaptive = bool):
         self.ivp = ivp

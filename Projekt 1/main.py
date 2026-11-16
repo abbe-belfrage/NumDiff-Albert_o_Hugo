@@ -4,7 +4,7 @@ import scipy.linalg
 import matplotlib.pyplot as plt
 # import sys
 # sys.path.append("..")
-from Classes import Solver, ivp, LTE, Evaluator
+from Classes import Solver, ivp, LTE, Evaluator, LotkaVolterra
 
 class RK4(Solver):
     def __init__(self, ivp, N):
@@ -37,7 +37,6 @@ class RK34(Solver):
         self.tol = tol
         self.k = 4                  # RK34 has k = 4 (according to science)'
         
-
     def step(self, tn, un):
         h = self.h
         Y_1_prime = self.ivp.f(tn, un)
@@ -69,7 +68,7 @@ class RK34(Solver):
             while self.grid[-1] < T:
                 t_curr = self.grid[-1]
                 self.newstep()
-                if t_curr > T:
+                if t_curr + self.h > T:
                     self.h = T - self.grid[-1]
                     t_next = T
                 else: 
@@ -86,17 +85,28 @@ class RK34(Solver):
         return self.grid, us
 
 
-ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.2
-solver = RK34(ivp, 1000, tol=1e-6, adaptive=True)
+ivp = LotkaVolterra(t0 = 0, T = 1, y0 = np.array([1.1, 0.9]))
+solver = RK34(ivp, 1000, tol = 1e-7, adaptive = True)
 ts, us = solver.integrate()
-print(ts)
-#exact = solver.ivp.exact(ts)
-plt.plot(ts, us, label = 'RK34 adaptive')
-#plt.plot(ts, exact, label = 'exact')
-plt.xlabel('ts')
-plt.ylabel('us')
+print(us)
+plt.plot(ts, xs, label = 'Rabbits')
+plt.plot(ts, ys, label = 'Foxes')
+plt.xlabel('time')
+plt.ylabel('# of animals')
 plt.legend()
 plt.show()
+
+# ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.5
+# solver = RK34(ivp, 1000, tol=1e-6, adaptive=False)
+# ts, us = solver.integrate()
+# plt.plot(ts, us, label = 'RK34 fixed')
+# solver_2 = RK34(ivp, 1000, tol=1e-6, adaptive=True)
+# ts, us = solver_2.integrate()
+# plt.plot(ts, us, label = 'RK34 adaptive')
+# plt.xlabel('ts')
+# plt.ylabel('us')
+# plt.legend()
+# plt.show()
 
 
 #ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.2
