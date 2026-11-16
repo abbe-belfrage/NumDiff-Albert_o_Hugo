@@ -55,7 +55,7 @@ class RK34(Solver):
             self.errestold = self.tol
         else:
             self.errestold = self.errest
-        self.step(self.grid, self.u)
+        self.step(self.grid[-1], self.u)
         hn = ((self.tol / self.errest) ** (2 / (3*self.k))) * ((self.tol / self.errestold) ** (-1 / (3*self.k)) * self.h)
         self.h = hn                                    
 
@@ -63,17 +63,20 @@ class RK34(Solver):
         if self.adaptive == True:
             T = self.ivp.T
             t0 = self.ivp.t0
-            us = np.zeros(0)
+            us = np.array([self.u])
             self.grid = np.append(self.grid, t0)
-            us = np.append(us, self.u)
             self.h = np.abs(T - t0) * self.tol ** (1 / self.k) / (100 * (1 + np.linalg.norm(self.ivp.f(t0, self.ivp.y0))))
-            while self.grid[-1] < self.ivp.T:
+            while self.grid[-1] < T:
+                t_curr = self.grid[-1]
                 self.newstep()
-                self.grid = np.append(self.grid, self.grid[-1] + self.h)
-                if self.grid[-1] > T:
+                if t_curr > T:
                     self.h = T - self.grid[-1]
-                    self.grid[-1] = self.grid[-2] + self.h
-                self.u = self.step(self.grid[-1] + self.h, self.u)
+                    t_next = T
+                else: 
+                    t_next = t_curr + self.h
+
+                self.u = self.step(t_curr, self.u)
+                self.grid = np.append(self.grid, t_next)
                 us = np.append(us, self.u)
         else: 
             us = np.zeros(self.N + 1)
