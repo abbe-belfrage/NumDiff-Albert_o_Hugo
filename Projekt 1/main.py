@@ -68,12 +68,13 @@ class RK34(Solver):
             us = np.append(us, self.u)
             self.h = np.abs(T - t0) * self.tol ** (1 / self.k) / (100 * (1 + np.linalg.norm(self.ivp.f(t0, self.ivp.y0))))
             while self.grid[-1] < self.ivp.T:
+                self.newstep()
+                self.grid = np.append(self.grid, self.grid[-1] + self.h)
                 if self.grid[-1] > T:
                     self.h = T - self.grid[-1]
+                    self.grid[-1] = self.grid[-2] + self.h
                 self.u = self.step(self.grid[-1] + self.h, self.u)
                 us = np.append(us, self.u)
-                self.grid = np.append(self.grid, self.grid[-1] + self.h)
-                self.newstep()
         else: 
             us = np.zeros(self.N + 1)
             for i in range(self.N):
@@ -86,6 +87,7 @@ class RK34(Solver):
 ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.2
 solver = RK34(ivp, 1000, tol=1e-6, adaptive=True)
 ts, us = solver.integrate()
+print(ts)
 #exact = solver.ivp.exact(ts)
 plt.plot(ts, us, label = 'RK34 adaptive')
 #plt.plot(ts, exact, label = 'exact')
@@ -93,7 +95,6 @@ plt.xlabel('ts')
 plt.ylabel('us')
 plt.legend()
 plt.show()
-print(solver.grid)
 
 
 #ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.2
