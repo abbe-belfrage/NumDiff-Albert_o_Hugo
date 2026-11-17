@@ -48,6 +48,20 @@ class LotkaVolterra(ivp):
     def H(self, x, y):
         return self.c * x + self.b * y - self.d * np.log(x) - self.a * np.log(y)
 
+class vanderPol(ivp):
+    def __init__(self, t0, T, y0, mu):
+        super().__init__(t0, T, y0)
+        self.mu = mu
+
+    def f(self, mu, y):
+        y_1 = y[0]
+        y_2 = y[1]
+        
+        y_1_prime = y_2
+        y_2_prime = mu * (1 - y_1 ** 2) * y_2 - y_1
+        
+        return np.array[y_1_prime, y_2_prime]
+
 
 class Solver:
     def __init__(self, ivp, N, tol = 1e-6, adaptive = bool):

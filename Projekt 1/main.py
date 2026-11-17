@@ -4,7 +4,7 @@ import scipy.linalg
 import matplotlib.pyplot as plt
 # import sys
 # sys.path.append("..")
-from Classes import Solver, ivp, LTE, Evaluator, LotkaVolterra
+from Classes import Solver, ivp, LTE, Evaluator, LotkaVolterra, vanderPol
 
 class RK4(Solver):
     def __init__(self, ivp, N):
@@ -84,38 +84,39 @@ class RK34(Solver):
                 us[self.N] = self.u
         return self.grid, us
 
-
-ivp = LotkaVolterra(t0 = 0, T = 100, y0 = np.array([1, 0.9]), a = 3, b = 9, c = 15 , d = 15)
-solver = RK34(ivp, 100000, tol = 1e-6, adaptive = True)
-ts, us = solver.integrate()
-xs = us[0::2]  # Even indices: x0, x1, x2, ... (Rabbits)
-ys = us[1::2]  # Odd indices:  y0, y1, y2, ... (Foxes)
-# plt.plot(ts, xs, label = 'Rabbits')
-# plt.plot(ts, ys, label = 'Foxes')
-# plt.xlabel('time')
-# plt.ylabel('# of animals')
-# plt.legend()
-# plt.show()
-
-# plt.plot(xs, ys)
-# plt.xlabel('Rabbits (x)')
-# plt.ylabel('Foxes (y)')
-# plt.title('Lotka-Volterra Phase Portrait')
-# plt.show()
-
-Hs = ivp.H(xs, ys)
-print(type(xs))
-print(type(ys))
-print(type(Hs))
-H_0 = ivp.H(xs[0], ys[0])
-test_log = np.log(np.abs((Hs / H_0) - 1))
-ts_log = np.log(ts)
-
-plt.plot(ts, test_log, label = 'test')      #Linlog reasonable to represent the magnitude of error over time.
+mu = 100
+ivp = vanderPol(t0 = 0, T = 2*mu, y0 = np.array([2, 0]), mu = mu)
+solver = RK34(ivp, 100, tol = 1e-6, adaptive=True)
+ts, ys = solver.integrate()
+y_2s = ys[1::2]
+y_1s = ys[0::2]
+plt.plot(ts, y_2s, label = 'y_2 over time')
 plt.xlabel('time')
-plt.ylabel('log(H/H_0 - 1)')
+plt.ylabel('y_2')
+plt.legend()
+plt.plot(y_1s, y_2s, label = 'Phase portrait')
+plt.xlabel('y_1')
+plt.ylabel('y_2')
 plt.legend()
 plt.show()
+
+# ivp = LotkaVolterra(t0 = 0, T = 100, y0 = np.array([1, 0.9]), a = 3, b = 9, c = 15 , d = 15)      #Task3
+# solver = RK34(ivp, 100000, tol = 1e-6, adaptive = True)
+# ts, us = solver.integrate()
+# xs = us[0::2]  # Even indices: x0, x1, x2, ... (Rabbits)
+# ys = us[1::2]  # Odd indices:  y0, y1, y2, ... (Foxes)
+# # plt.plot(ts, xs, label = 'Rabbits')                     #Task3.2, 3.3
+# # plt.plot(ts, ys, label = 'Foxes')
+# # plt.xlabel('time')
+# # plt.ylabel('# of animals')
+# # plt.legend()
+# # plt.show()
+
+# # plt.plot(xs, ys)                                        
+# # plt.xlabel('Rabbits (x)')
+# # plt.ylabel('Foxes (y)')
+# # plt.title('Lotka-Volterra Phase Portrait')
+# # plt.show()
 
 
 # ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.5
