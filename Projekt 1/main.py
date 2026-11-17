@@ -84,21 +84,48 @@ class RK34(Solver):
                 us[self.N] = self.u
         return self.grid, us
 
-mu = 100
-ivp = vanderPol(t0 = 0, T = 2*mu, y0 = np.array([2, 0]), mu = mu)
-solver = RK34(ivp, 100, tol = 1e-6, adaptive=True)
-ts, ys = solver.integrate()
-y_2s = ys[1::2]
-y_1s = ys[0::2]
-plt.plot(ts, y_2s, label = 'y_2 over time')
-plt.xlabel('time')
-plt.ylabel('y_2')
-plt.legend()
-plt.plot(y_1s, y_2s, label = 'Phase portrait')
-plt.xlabel('y_1')
-plt.ylabel('y_2')
+mu = 22
+
+mus = np.array([10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470]) #, 680, 1000
+Ns = np.array([])
+
+for mu in mus:
+    ivp = vanderPol(t0 = 0, T = 0.7 * mu, y0 = np.array([2.0, 0]), mu = mu)
+    solver = RK34(ivp, 100, tol = 1e-6, adaptive=True)
+    ts, ys = solver.integrate()
+    y_1s = ys[0::2]
+    y_2s = ys[1::2]
+    N = len(solver.grid)
+    Ns = np.append(Ns, N)
+
+mus_log = np.log(mus)
+Ns_log = np.log(Ns)
+plt.plot(mus_log, Ns_log, label = 'Ln(N) over ln(mu)')
+plt.xlabel('mu_log')
+plt.ylabel('N_log')
 plt.legend()
 plt.show()
+
+
+# plt.plot(ts, y_2s, label = 'y_2 over time')
+# plt.xlabel('time')
+# plt.ylabel('y_2')
+# plt.legend()
+# plt.show()
+
+# y_2s_log = np.log10(y_2s)                             #linlog
+# plt.plot(ts, y_2s, label = 'log(abs(y_2)) over time')
+# plt.semilogy(solver.grid[:-1], np.diff(solver.grid))
+# plt.xlabel('time')
+# plt.ylabel('y_2_log')
+# plt.legend()
+# plt.show()
+
+# plt.plot(y_1s, y_2s, label = 'Phase portrait')
+# plt.xlabel('y_1')
+# plt.ylabel('y_2')
+# plt.legend()
+# plt.show()
 
 # ivp = LotkaVolterra(t0 = 0, T = 100, y0 = np.array([1, 0.9]), a = 3, b = 9, c = 15 , d = 15)      #Task3
 # solver = RK34(ivp, 100000, tol = 1e-6, adaptive = True)
