@@ -28,12 +28,12 @@ class LTE(ivp):
         return self.y0 * scipy.linalg.expm(t*self.A)
 
 class LotkaVolterra(ivp):
-    def __init__(self, t0, T, y0):
+    def __init__(self, t0, T, y0,a,b,c,d):
         super().__init__(t0, T, y0)
-        self.a = 3
-        self.b = 9
-        self.c = 15
-        self.d = 15
+        self.a = a # Vikt att kaniner växer
+        self.b = b # Vikt att kanin blir uppäten av räv
+        self.c = c # Vikt att rävar ökar av att äta kaniner
+        self.d = d # Vikt att en räv dör av sig själv dör baserat på rävar
 
 
     def f(self, t, y):
@@ -44,6 +44,9 @@ class LotkaVolterra(ivp):
         dy = self.c*x*predator - self.d*predator
 
         return np.array([dx, dy])
+
+    def H(self, x, y):
+        return self.c * x + self.b * y - self.d * np.log(x) - self.a * np.log(y)
 
 
 class Solver:
