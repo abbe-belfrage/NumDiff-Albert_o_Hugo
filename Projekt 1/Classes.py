@@ -35,10 +35,16 @@ class LotkaVolterra(ivp):
         self.c = 15
         self.d = 15
 
+
     def f(self, t, y):
-        y[0] = self.a*y[0] - self.b*y[0]*y[1]
-        y[1] = self.c*y[0]*y[1] - self.d*y[1]
-        return y
+        x = y[0]
+        predator = y[1]
+
+        dx = self.a*x - self.b*x*predator
+        dy = self.c*x*predator - self.d*predator
+
+        return np.array([dx, dy])
+
 
 class Solver:
     def __init__(self, ivp, N, tol = 1e-6, adaptive = bool):
