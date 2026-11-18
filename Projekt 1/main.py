@@ -83,7 +83,7 @@ class RK34(Solver):
                 us[self.N] = self.u
         return self.grid, us
 
-mus = np.array([10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470]) #
+mus = np.array([10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470, 680, 1000, 10000]) #
 Ns = np.array([])
 
 for mu in mus:                                                                  #Task 4.4   
@@ -91,8 +91,9 @@ for mu in mus:                                                                  
     T = 0.7 * mu                                  
     ivp = vanderPol(0, T, y0, mu)
     t_span = [0, T]
-    sol = scipy.integrate.solve_ivp(ivp.f, t_span, y0 = np.array([2.0, 0]), method = 'RK45')
-    N = len(sol)
+    rtol, atol = (1e-8, 1e-8)
+    sol = scipy.integrate.solve_ivp(ivp.f, t_span, y0 = np.array([2.0, 0]), method = 'BDF', rtol = rtol, atol = atol)
+    N = len(sol.y[0])
     Ns = np.append(Ns, N)
 
 # mus = np.array([10, 15, 22, 33, 47, 68, 100]) #, 150, 220, 330, 470, 680, 1000
