@@ -1,9 +1,8 @@
 import numpy as np
 import scipy as sp
 import scipy.linalg
+from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-# import sys
-# sys.path.append("..")
 from Classes import Solver, ivp, LTE, Evaluator, LotkaVolterra, vanderPol
 
 class RK4(Solver):
@@ -84,19 +83,29 @@ class RK34(Solver):
                 us[self.N] = self.u
         return self.grid, us
 
-mu = 22
-
-mus = np.array([10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470, 680]) #, 1000
+mus = np.array([10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470]) #
 Ns = np.array([])
 
-for mu in mus:
-    ivp = vanderPol(t0 = 0, T = 0.7 * mu, y0 = np.array([2.0, 0]), mu = mu)
-    solver = RK34(ivp, 100, tol = 1e-6, adaptive=True)
-    ts, ys = solver.integrate()
-    y_1s = ys[0::2]
-    y_2s = ys[1::2]
-    N = len(solver.grid)
+for mu in mus:                                                                  #Task 4.4   
+    y0 = np.array([2.0, 0])
+    T = 0.7 * mu                                  
+    ivp = vanderPol(0, T, y0, mu)
+    t_span = [0, T]
+    sol = scipy.integrate.solve_ivp(ivp.f, t_span, y0 = np.array([2.0, 0]), method = 'RK45')
+    N = len(sol)
     Ns = np.append(Ns, N)
+
+# mus = np.array([10, 15, 22, 33, 47, 68, 100]) #, 150, 220, 330, 470, 680, 1000
+# Ns = np.array([])
+
+# for mu in mus:                                                                    #TASK 4.3
+#     ivp = vanderPol(t0 = 0, T = 0.7 * mu, y0 = np.array([2.0, 0]), mu = mu)
+#     solver = RK34(ivp, 100, tol = 1e-6, adaptive=True)
+#     ts, ys = solver.integrate()
+#     y_1s = ys[0::2]
+#     y_2s = ys[1::2]
+#     N = len(solver.grid)
+#     Ns = np.append(Ns, N)
 
 mus_log = np.log(mus)
 Ns_log = np.log(Ns)
