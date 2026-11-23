@@ -86,15 +86,15 @@ class RK34(Solver):
 mus = np.array([10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470, 680, 1000, 10000]) #
 Ns = np.array([])
 
-for mu in mus:                                                                  #Task 4.4   
-    y0 = np.array([2.0, 0])
-    T = 0.7 * mu                                  
-    ivp = vanderPol(0, T, y0, mu)
-    t_span = [0, T]
-    rtol, atol = (1e-8, 1e-8)
-    sol = scipy.integrate.solve_ivp(ivp.f, t_span, y0 = np.array([2.0, 0]), method = 'BDF', rtol = rtol, atol = atol)
-    N = len(sol.y[0])
-    Ns = np.append(Ns, N)
+# for mu in mus:                                                                  #Task 4.4   
+#     y0 = np.array([2.0, 0])
+#     T = 0.7 * mu                                  
+#     ivp = vanderPol(0, T, y0, mu)
+#     t_span = [0, T]
+#     rtol, atol = (1e-8, 1e-8)
+#     sol = scipy.integrate.solve_ivp(ivp.f, t_span, y0 = np.array([2.0, 0]), method = 'BDF', rtol = rtol, atol = atol)
+#     N = len(sol.y[0])
+#     Ns = np.append(Ns, N)
 
 # mus = np.array([10, 15, 22, 33, 47, 68, 100]) #, 150, 220, 330, 470, 680, 1000
 # Ns = np.array([])
@@ -108,13 +108,13 @@ for mu in mus:                                                                  
 #     N = len(solver.grid)
 #     Ns = np.append(Ns, N)
 
-mus_log = np.log(mus)
-Ns_log = np.log(Ns)
-plt.plot(mus_log, Ns_log, label = 'Ln(N) over ln(mu)')
-plt.xlabel('mu_log')
-plt.ylabel('N_log')
-plt.legend()
-plt.show()
+# mus_log = np.log(mus)
+# Ns_log = np.log(Ns)
+# plt.plot(mus_log, Ns_log, label = 'Ln(N) over ln(mu)')
+# plt.xlabel('mu_log')
+# plt.ylabel('N_log')
+# plt.legend()
+# plt.show()
 
 
 # plt.plot(ts, y_2s, label = 'y_2 over time')
@@ -137,23 +137,24 @@ plt.show()
 # plt.legend()
 # plt.show()
 
-# ivp = LotkaVolterra(t0 = 0, T = 100, y0 = np.array([1, 0.9]), a = 3, b = 9, c = 15 , d = 15)      #Task3
-# solver = RK34(ivp, 100000, tol = 1e-6, adaptive = True)
-# ts, us = solver.integrate()
-# xs = us[0::2]  # Even indices: x0, x1, x2, ... (Rabbits)
-# ys = us[1::2]  # Odd indices:  y0, y1, y2, ... (Foxes)
-# # plt.plot(ts, xs, label = 'Rabbits')                     #Task3.2, 3.3
-# # plt.plot(ts, ys, label = 'Foxes')
-# # plt.xlabel('time')
-# # plt.ylabel('# of animals')
-# # plt.legend()
-# # plt.show()
+ivp = LotkaVolterra(t0 = 0, T = 100, y0 = np.array([50, 0.9]), a = 3, b = 9, c = 15 , d = 15)      #Task3
+solver = RK34(ivp, 100000, tol = 1e-6, adaptive = True)
+ts, us = solver.integrate()
+xs = us[0::2]  # Even indices: x0, x1, x2, ... (Rabbits)
+ys = us[1::2]  # Odd indices:  y0, y1, y2, ... (Foxes)
+plt.plot(ts, xs, label = 'Rabbits')                     #Task3.2, 3.3
+plt.plot(ts, ys, label = 'Foxes')
+plt.title("Population over time y0=[5,0.9]")
+plt.xlabel('time')
+plt.ylabel('# of animals')
+plt.legend()
+plt.show()
 
-# # plt.plot(xs, ys)                                        
-# # plt.xlabel('Rabbits (x)')
-# # plt.ylabel('Foxes (y)')
-# # plt.title('Lotka-Volterra Phase Portrait')
-# # plt.show()
+plt.plot(xs, ys)                                        
+plt.xlabel('Rabbits (x)')
+plt.ylabel('Foxes (y)')
+plt.title('Phase Portrait y0=[5,0.9]')
+plt.show()
 
 
 # ivp = LTE(t0 = 0, T = 1, y0 = 2, A = -1)            #For Task 2.5
@@ -180,3 +181,17 @@ plt.show()
 #plt.ylabel('log_grids')
 #plt.legend()
 #plt.show()
+
+Hs = ivp.H(xs, ys)
+print(type(xs))
+print(type(ys))
+print(type(Hs))
+H_0 = ivp.H(xs[0], ys[0])
+test_log = np.log(np.abs((Hs / H_0) - 1))
+ts_log = np.log(ts)
+
+plt.plot(ts, test_log, label = 'test')      #Linlog reasonable to represent the magnitude of error over time.
+plt.xlabel('time')
+plt.ylabel('log(H/H_0 - 1)')
+plt.legend()
+plt.show()
